@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/review/reject/{review}', [ReviewController::class, 'rejectReview'])->name('review.reject');
 Route::get('/', function () {
     return view('welcome');
 });

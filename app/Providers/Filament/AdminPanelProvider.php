@@ -36,8 +36,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
-            ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
-            ->plugin(EmailTemplatesPlugin::make())
+            ->plugin(FilamentSpatieRolesPermissionsPlugin::make(), fn() => auth()->check() && auth()->user()->hasRole('super_admin'))
+            ->plugin(EmailTemplatesPlugin::make(), fn() => auth()->check() && auth()->user()->hasRole('super_admin'))
             ->pages([])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([

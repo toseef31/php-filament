@@ -128,4 +128,9 @@ class ReviewResource extends Resource
             'view' => Pages\ViewReview::route('/{record}'),
         ];
     }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->check() && auth()->user()->hasAnyRole(['referee']);
+    }
 }

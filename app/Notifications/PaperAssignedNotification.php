@@ -28,7 +28,7 @@ class PaperAssignedNotification extends Notification
         return (new MailMessage)
             ->subject('Paper Assigned to You')
             ->line('A new paper has been assigned to you for review.')
-            ->action('View Paper', url('/filament/resources/papers/' . $this->paper->id));
+            ->action('View Paper', url('/admin/papers/' . $this->paper->id));
     }
 
     public function toArray($notifiable)

@@ -71,21 +71,33 @@ class FieldResource extends Resource
     // Only super admin can access this resource
     public static function canViewAny(): bool
     {
-        return auth()->user()->hasRole('super_admin');
+        if (auth()->check())
+            return auth()->user()->hasAnyRole(['super_admin']);
+        else
+            return false;
     }
 
     public static function canCreate(): bool
     {
-        return auth()->user()->hasRole('super_admin');
+        if (auth()->check())
+            return auth()->user()->hasAnyRole(['super_admin']);
+        else
+            return false;
     }
 
     public static function canEdit(Model $record): bool
     {
-        return auth()->user()->hasRole('super_admin');
+        if (auth()->check())
+            return auth()->user()->hasAnyRole(['super_admin']);
+        else
+            return false;
     }
 
     public static function canDelete(Model $record): bool
     {
-        return auth()->user()->hasRole('super_admin');
+        if (auth()->check())
+            return auth()->user()->hasAnyRole(['super_admin']);
+        else
+            return false;
     }
 }

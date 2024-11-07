@@ -12,11 +12,13 @@ class RefereeAccessNotification extends Notification
 
     protected $paper;
     protected $referee;
+    protected $review;
 
-    public function __construct($paper, $referee)
+    public function __construct($paper, $referee, $review)
     {
         $this->paper = $paper;
         $this->referee = $referee;
+        $this->review = $review;
     }
 
     public function via($notifiable)
@@ -26,12 +28,17 @@ class RefereeAccessNotification extends Notification
 
     public function toMail($notifiable)
     {
+        $acceptUrl = url('admin/reviews/' . $this->review->id . '?paper_id=' . $this->paper->id . '&referee_id=' . $this->referee->id);
+        $declineUrl = route('review.reject', $this->review);
+
         return (new MailMessage)
             ->subject('Access to Paper for Review – Paper Submission Platform')
             ->greeting('Dear ' . $this->referee->name . ',')
-            ->line('Thank you for agreeing to review the paper titled "' . $this->paper->title . '."')
+            ->line('Thank you for considering to review the paper titled "' . $this->paper->title . '."')
             ->line('We greatly appreciate your time and expertise in contributing to the quality and integrity of our publication process.')
-            ->action('Access Paper for Review', url('admin/reviews' . '/' . $this->referee->id . '?paper_id=' . $this->paper->id . '&referee_id=' . $this->referee->id))
+            ->line('Please choose one of the options below:')
+            ->line('[Accept Review](' . $acceptUrl . ')')
+            ->line('[Decline Review](' . $declineUrl . ')')
             ->line('**Paper Details:**')
             ->line('**Title:** ' . $this->paper->title)
             ->line('**Authors:** ' . $this->paper->author->name)

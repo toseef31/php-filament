@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\RegisterResource\Pages;
 
 use App\Models\User;
+use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
 use Filament\Forms\Components\TextInput;
 use Parfaitementweb\FilamentCountryField\Forms\Components\Country;
@@ -38,6 +39,12 @@ class Register extends Page
             TextInput::make('affiliation')->label('Affiliation')->required()->maxLength(255),
             TextInput::make('email')->email()->label('Email')->required()->unique('users', 'email')->maxLength(255),
             TextInput::make('password')->password()->label('Password')->required()->minLength(8),
+            Select::make('roles')
+                ->multiple()
+                ->relationship('roles', 'name') // This dropdown shows roles
+                ->default([1]) // Replace "1" with the ID of the role you want to set by default
+                ->required()
+                ->hidden(),
         ];
     }
 
@@ -45,16 +52,17 @@ class Register extends Page
 
     public function submit()
     {
-        User::create([
+        $user = User::create([
             'name' => $this->name,
             'surname' => $this->surname,
             'country' => $this->country,
             'affiliation' => $this->affiliation,
             'email' => $this->email,
+            'email' => $this->email,
             'password' => Hash::make($this->password),
         ]);
-
+        $user->roles()->sync([1]);
         session()->flash('success', 'Registration successful. You can now log in.');
-        return redirect()->route('filament.auth.login');
+        return redirect('admin/login');
     }
 }

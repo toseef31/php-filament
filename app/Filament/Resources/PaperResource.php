@@ -104,12 +104,12 @@ class PaperResource extends Resource
                             $record->save();
                             foreach ($data['referees'] as $refereeId) {
                                 $referee = User::find($refereeId);
-                                Review::create([
+                                $review = Review::create([
                                     'paper_id' => $record->id,
                                     'referee_id' => $referee->id,
                                     'comments' => 'Pending review comments',
                                 ]);
-                                $referee->notify(new RefereeAccessNotification($record, $referee));
+                                $referee->notify(new RefereeAccessNotification($record, $referee, $review));
                             }
                         }
                     })
@@ -160,11 +160,9 @@ class PaperResource extends Resource
                         });
 
                         // Notify authors about the final decision
-                        $record->load('authors');
-                        if ($record->authors) {
-                            foreach ($record->authors as $author) {
-                                $author->notify(new PaperDecisionNotification($record, $decision));
-                            }
+                        $record->load('author');
+                        if ($record->author) {
+                            $record->author->notify(new PaperDecisionNotification($record, $decision));
                         }
 
                         // Notify referees if revision is requested
